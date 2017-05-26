@@ -1,4 +1,4 @@
-package org.particular.model.components;
+package org.particular.model.cliente.components;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

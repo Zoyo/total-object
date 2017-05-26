@@ -1,10 +1,14 @@
-package org.particular.model.components;
+package org.particular.model.cliente.components;
+
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ID {
+public class ID implements Serializable {
+	private static final long serialVersionUID = 6502811456640348288L;
+	
 	@Column(name="id")
 	private Long id;
 

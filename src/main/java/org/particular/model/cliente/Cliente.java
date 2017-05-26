@@ -1,14 +1,14 @@
-package org.particular.model;
+package org.particular.model.cliente;
 
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.particular.model.components.CPF;
-import org.particular.model.components.Fone;
-import org.particular.model.components.ID;
-import org.particular.model.components.Nome;
+import org.particular.model.cliente.components.CPF;
+import org.particular.model.cliente.components.Fone;
+import org.particular.model.cliente.components.ID;
+import org.particular.model.cliente.components.Nome;
 
 @Entity
 @Table(name="CLIENTES")

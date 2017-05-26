@@ -5,22 +5,27 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource(value = { "classpath:application.properties" })
+@PropertySource(value = { "classpath:application.properties", "classpath:application-test.properties" })
+@ComponentScan(value={"org.particular"})
 public class Configurations {
+	@Autowired
+	private Environment env;
 	
 	@Bean
 	public DataSource getDataSource() {
@@ -51,22 +56,23 @@ public class Configurations {
 	
 	@Bean
 	public LocalSessionFactoryBean getSessionFactory() {
-		LocalSessionFactoryBuilder lsfb = new LocalSessionFactoryBuilder(getDataSource());
-		lsfb.scanPackages("org.particular");
-		lsfb.setProperties(getHibernateProperties());
-		return null;
+		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setDataSource(this.getDataSource());
+		sessionFactory.setPackagesToScan("org.particular");
+		sessionFactory.setHibernateProperties(this.getHibernateProperties());
+		return sessionFactory;
 	}
 
 	@Bean
 	public Properties getHibernateProperties() {
-		Properties hp = new Properties();
-        hp.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-        hp.put("hibernate.show_sql", "true");
-        hp.put("hibernate.hbm2ddl.auto", "create-drop");
-        hp.put("hibernate.show_sql", "true");
-		return hp;
+		Properties properties = new Properties();
+		properties.put(AvailableSettings.DIALECT, env.getRequiredProperty("hibernate.dialect"));
+		properties.put(AvailableSettings.SHOW_SQL, env.getRequiredProperty("hibernate.show_sql"));
+		properties.put(AvailableSettings.STATEMENT_BATCH_SIZE, env.getRequiredProperty("hibernate.batch.size"));
+		properties.put(AvailableSettings.HBM2DDL_AUTO, env.getRequiredProperty("hibernate.hbm2ddl.auto"));
+		properties.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, env.getRequiredProperty("hibernate.current.session.context.class"));		
+		return properties;
 	}
-	
 }
 
 
