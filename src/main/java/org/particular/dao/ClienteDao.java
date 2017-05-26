@@ -34,6 +34,7 @@ public class ClienteDao {
 	@SuppressWarnings("unchecked")
 	public List<Cliente> list() {
 		Criteria criteria = this.getSession().createCriteria(Cliente.class);
-		return criteria.list();
+		List<Cliente> clientes = criteria.list();
+		return clientes;
 	}
 }

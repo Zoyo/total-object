@@ -30,7 +30,7 @@ public class Configurations {
 	@Bean
 	public DataSource getDataSource() {
 		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-		builder.setType(EmbeddedDatabaseType.HSQL).addScript("schema.sql").addScript("data.sql");
+		builder.setType(EmbeddedDatabaseType.HSQL).addScript("classpath:schema.sql").addScript("classpath:data.sql");
 		return builder.build();
 	}
 
