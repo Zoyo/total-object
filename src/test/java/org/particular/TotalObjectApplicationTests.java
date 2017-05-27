@@ -11,7 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.particular.dao.ClienteDao;
 import org.particular.model.cliente.Cliente;
+import org.particular.model.cliente.components.CPF;
+import org.particular.model.cliente.components.Fone;
 import org.particular.model.cliente.components.ID;
+import org.particular.model.cliente.components.Nome;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
@@ -51,6 +54,23 @@ public class TotalObjectApplicationTests {
 		assertEquals("ERIKA GOMES DO NASCIMENTO", cliente2.getNome().get());
 		assertEquals("2587458932", cliente2.getCpf().get());
 		assertEquals("(19)12345-1234", cliente2.getFone().get());
+	}
+	
+	@Test
+	public void whenAddNewCliente_thenOK() throws Exception {
+		Cliente cliente = new Cliente();
+		cliente.setId(new ID(3L));
+		cliente.setNome(new Nome("Isso é só um teste"));
+		cliente.setCpf(new CPF("12345678900"));
+		cliente.setFone(new Fone("(12)3456-7890"));
+		clienteDao.save(cliente);
+		
+		cliente = null;
+		
+		Cliente clienteRecente = clienteDao.findById(new ID(3L));
+		assertEquals("Isso é só um teste", clienteRecente.getNome().get());
+		assertEquals("12345678900", clienteRecente.getCpf().get());
+		assertEquals("(12)3456-7890", clienteRecente.getFone().get());
 	}
 }
 

@@ -25,6 +25,12 @@ public class Cliente {
 	@Embedded
 	private Fone fone;
 	
+	public ID getId() {
+		return id;
+	}
+	public void setId(ID id) {
+		this.id = id;
+	}
 	public Nome getNome() {
 		return nome;
 	}
