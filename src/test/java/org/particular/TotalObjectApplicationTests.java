@@ -1,15 +1,22 @@
 package org.particular;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.particular.dao.ClienteDao;
 import org.particular.model.cliente.Cliente;
+import org.particular.model.cliente.components.ID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -17,12 +24,33 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TotalObjectApplicationTests {
 	@Autowired
 	private ClienteDao clienteDao;
-
+	private EmbeddedDatabase db;
+	
+	@Before
+	public void setup() {
+		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+		db = builder.setType(EmbeddedDatabaseType.HSQL).addScripts("classpath:schema.sql", "classpath:data.sql").build();
+		
+	}
+	
+	@After
+	public void finish() {
+		db.shutdown();
+	}
+	
 	@Test
 	public void whenListClientes_thenOK() {
 		List<Cliente> clientes = clienteDao.list();
 		System.out.println(clientes);
 		assertFalse(clientes.isEmpty());
+	}
+	
+	@Test
+	public void whenLoadByValidID_thenOK() throws Exception {
+		Cliente cliente2 = clienteDao.findById(new ID(2L));
+		assertEquals("ERIKA GOMES DO NASCIMENTO", cliente2.getNome().get());
+		assertEquals("2587458932", cliente2.getCpf().get());
+		assertEquals("(19)12345-1234", cliente2.getFone().get());
 	}
 }
 
